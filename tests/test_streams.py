@@ -1,5 +1,6 @@
 """Sync-mode, pagination and record-shape tests against a mocked API."""
 
+import json
 from datetime import datetime, timedelta, timezone
 from urllib.parse import parse_qs, urlparse
 
@@ -22,6 +23,9 @@ def _conversation(cid, updated):
             "updatedAt": updated,
             "participants": [{"email": "a@example.com", "name": "A", "organizer": True}],
             "linkedCrmRecords": [{"id": "006X", "code": "Opportunity"}],
+            "labels": {"Topic": ["Pricing"]},
+            "scorecardResults": [{"uuid": "s1", "summary": {"summaryText": "ok"}}],
+            "extractedIntelligence": {"k": {"value": "v", "options": {"values": ["v"]}}},
             "transcript": [
                 {
                     "speaker": {"name": "A", "email": "a@example.com", "type": "internal"},
@@ -122,6 +126,24 @@ def test_record_is_flattened(requests_mock):
     assert record["linkedCrmRecords"] == [{"id": "006X", "code": "Opportunity"}]
     assert record["transcript"][0]["words"][0]["text"] == "Hi"
     assert "attributes" not in record
+
+
+def test_full_sync_keeps_raw_json_fields(requests_mock, capsys):
+    requests_mock.get(
+        f"{API}/conversations/list",
+        json={
+            "data": [_conversation("c1", "2026-02-01T00:00:00Z")],
+            "meta": {"pageNumber": 1, "pageCount": 1},
+        },
+    )
+    requests_mock.get(f"{API}/users", json={"data": []})
+    TapAttention(config=CONFIG).sync_all()
+
+    messages = [json.loads(line) for line in capsys.readouterr().out.splitlines()]
+    (record,) = [m["record"] for m in messages if m["type"] == "RECORD"]
+    assert record["labels"] == {"Topic": ["Pricing"]}
+    assert record["scorecardResults"][0]["summary"] == {"summaryText": "ok"}
+    assert record["extractedIntelligence"]["k"]["options"] == {"values": ["v"]}
 
 
 def test_users_include_deleted(requests_mock):

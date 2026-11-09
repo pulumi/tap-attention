@@ -34,6 +34,9 @@ CRM_RECORD = th.ObjectType(
     th.Property("code", th.StringType),
 )
 
+# Kept as raw JSON: the API spec does not pin down these shapes.
+OPEN_OBJECT = th.ObjectType(additional_properties=True)
+
 TEAM = th.ObjectType(
     th.Property("uuid", th.StringType),
     th.Property("name", th.StringType),
@@ -120,10 +123,12 @@ class ConversationsStream(AttentionStream):
         th.Property("externalAccounts", th.ArrayType(CRM_RECORD)),
         th.Property("externalContacts", th.ArrayType(CRM_RECORD)),
         th.Property("crmExportStatus", th.StringType),
-        th.Property("labels", th.AnyType),
-        th.Property("scorecardResults", th.AnyType, description="AI scorecards and summaries"),
-        th.Property("extractedIntelligence", th.AnyType, description="AI-extracted CRM fields"),
-        th.Property("confirmedExtractedIntelligence", th.AnyType),
+        th.Property("labels", OPEN_OBJECT),
+        th.Property(
+            "scorecardResults", th.ArrayType(OPEN_OBJECT), description="AI scorecards and summaries"
+        ),
+        th.Property("extractedIntelligence", OPEN_OBJECT, description="AI-extracted CRM fields"),
+        th.Property("confirmedExtractedIntelligence", OPEN_OBJECT),
         th.Property("archived", th.BooleanType),
         th.Property("isInternal", th.BooleanType),
         th.Property("isEmpty", th.BooleanType),
