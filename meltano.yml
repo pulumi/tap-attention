@@ -1,0 +1,42 @@
+version: 1
+send_anonymous_usage_stats: false
+project_id: tap-attention
+default_environment: test
+venv:
+  backend: uv
+environments:
+- name: test
+plugins:
+  extractors:
+  - name: tap-attention
+    namespace: tap_attention
+    pip_url: -e .
+    capabilities:
+    - state
+    - catalog
+    - discover
+    - about
+    - stream-maps
+    settings:
+    - name: api_key
+      kind: string
+      label: API Key
+      description: Organization-level API key (Attention Settings > API Keys)
+      sensitive: true
+    - name: api_url
+      label: API URL
+      value: https://api.attention.tech/v2
+    - name: start_date
+      kind: date_iso8601
+      label: Start Date
+      description: Earliest call date pulled by the first (stateless) sync
+    - name: lookback_hours
+      kind: integer
+      label: Lookback Hours
+      description: Always re-pull conversations updated within this many hours
+    config:
+      lookback_hours: 72
+  loaders:
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl

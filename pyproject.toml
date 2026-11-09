@@ -1,0 +1,42 @@
+[project]
+name = "pulumi-tap-attention"
+version = "0.0.1"
+description = "Singer tap for Attention (attention.com) call recordings, built with the Meltano Singer SDK."
+readme = "README.md"
+authors = [{ name = "Pablo Seibelt", email = "pablo@pulumi.com" }]
+keywords = ["ELT", "Attention"]
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+dependencies = [
+    "singer-sdk~=0.54.9",
+]
+
+[project.scripts]
+tap-attention = "tap_attention.tap:TapAttention.cli"
+
+[dependency-groups]
+dev = [{ include-group = "test" }]
+test = [
+    "pytest>=8",
+    "requests-mock>=1.12",
+    "singer-sdk[testing]",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["tap_attention"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["COM812", "D203", "D213"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "D", "ANN", "PLR2004", "INP001"]
+
+[build-system]
+requires = ["hatchling>=1,<2"]
+build-backend = "hatchling.build"
