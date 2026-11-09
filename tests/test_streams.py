@@ -46,7 +46,7 @@ def _query(request):
 
 
 def test_first_sync_pages_by_number(requests_mock):
-    url = f"{API}/conversations/list"
+    url = f"{API}/conversations"
     requests_mock.get(
         url,
         [
@@ -85,7 +85,7 @@ def _state(bookmark):
 
 
 def test_incremental_sync_follows_cursor(requests_mock):
-    url = f"{API}/conversations/list"
+    url = f"{API}/conversations"
     requests_mock.get(
         url,
         [
@@ -113,7 +113,7 @@ def test_recent_bookmark_rewinds_to_lookback():
 
 def test_record_is_flattened(requests_mock):
     requests_mock.get(
-        f"{API}/conversations/list",
+        f"{API}/conversations",
         json={
             "data": [_conversation("c1", "2026-02-01T00:00:00Z")],
             "meta": {"pageNumber": 1, "pageCount": 1},
@@ -130,7 +130,7 @@ def test_record_is_flattened(requests_mock):
 
 def test_full_sync_keeps_raw_json_fields(requests_mock, capsys):
     requests_mock.get(
-        f"{API}/conversations/list",
+        f"{API}/conversations",
         json={
             "data": [_conversation("c1", "2026-02-01T00:00:00Z")],
             "meta": {"pageNumber": 1, "pageCount": 1},

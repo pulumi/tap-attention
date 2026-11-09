@@ -1,6 +1,6 @@
 [project]
 name = "pulumi-tap-attention"
-version = "0.0.2"
+version = "0.0.3"
 description = "Singer tap for Attention (attention.com) call recordings, built with the Meltano Singer SDK."
 readme = "README.md"
 authors = [{ name = "Pablo Seibelt", email = "pablo@pulumi.com" }]

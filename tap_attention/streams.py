@@ -19,7 +19,7 @@ if t.TYPE_CHECKING:
     import requests
     from singer_sdk.helpers.types import Context
 
-PAGE_SIZE = 50  # API maximum for /conversations/list
+PAGE_SIZE = 50  # API maximum
 
 PARTICIPANT = th.ObjectType(
     th.Property("id", th.StringType),
@@ -62,7 +62,8 @@ class ConversationsStream(AttentionStream):
     """
 
     name = "conversations"
-    path = "/conversations/list"
+    # Not /conversations/list: that variant drops speaker emails from transcript turns.
+    path = "/conversations"
     primary_keys = ("id",)
     replication_key = "updatedAt"
     schema = th.PropertiesList(

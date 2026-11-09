@@ -8,12 +8,13 @@ Singer tap for [Attention](https://attention.com) call recordings, built with th
 
 | Stream | Endpoint | Key | Replication |
 | --- | --- | --- | --- |
-| `conversations` | `GET /conversations/list` | `id` | incremental on `updatedAt` |
+| `conversations` | `GET /conversations` | `id` | incremental on `updatedAt` |
 | `users` | `GET /users?includeDeleted=true` | `uuid` | full table |
 
 `conversations` holds call metadata, participants and attendees (internal ones included),
-the detailed transcript (speaker turns with word timings), linked CRM records, and
-Attention's scorecards and extracted fields as raw JSON.
+the detailed transcript (speaker turns with name, email and internal/external type, plus
+word timings), linked CRM records, and Attention's scorecards and extracted fields as raw
+JSON.
 
 ### Sync modes
 
